@@ -30,6 +30,7 @@ const entities = [
                 };
 
                 return {
+                    name: 'default',
                     type: 'mysql',
                     ...config,
                     autoLoadEntities: true,
@@ -42,6 +43,7 @@ const entities = [
         TypeOrmModule.forFeature(entities),
     ],
     exports: [TypeOrmModule],
+    providers: [],
 })
 export class InfrastructureModule {
     public static forRoot(): DynamicModule {

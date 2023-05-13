@@ -1,7 +1,10 @@
 import {Module} from "@nestjs/common";
+import {RestaurantService} from "./restaurant/restaurant.service";
+import {ReviewService} from "./review/review.service";
 
 const services = [
-
+    RestaurantService,
+    ReviewService,
 ];
 
 @Module({
