@@ -1,0 +1,16 @@
+version: '3'
+
+services:
+  db:
+    image: mysql/mysql-server:8.0
+    container_name: goodnight-db
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+      MYSQL_USER: ${DB_USERNAME}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+      MYSQL_DATABASE: ${DB_DATABASE}
+    ports:
+      - '3306:3306'
+    volumes:
+      - goodnight_db_vol:/var/lib/mysql
