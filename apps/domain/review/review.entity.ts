@@ -11,6 +11,6 @@ export class Review extends TypeOrmEntity {
     content: string;
 
     @ManyToOne(() => Restaurant, {})
-    @JoinColumn({referencedColumnName: "id", name:"restaurantId"})
+    @JoinColumn({referencedColumnName: 'id', name:'restaurantId'})
     restaurant: Restaurant;
 }

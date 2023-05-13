@@ -15,7 +15,6 @@ export class RestaurantService {
     ) {}
 
     // 레스토랑 등록
-    @Transactional()
     async createRestaurant(dto: CreateRestaurantDto): Promise<Restaurant> {
         const restaurant = new Restaurant();
         restaurant.name = dto.name;
@@ -53,7 +52,6 @@ export class RestaurantService {
     }
 
     //레스토랑 삭제 (Soft Delete)
-    @Transactional()
     async removeRestaurant(id: number): Promise<void> {
         const restaurant = await this.getOneById(id);
         await this.restaurantRepository.softRemove(restaurant);

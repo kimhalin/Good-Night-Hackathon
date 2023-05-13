@@ -20,7 +20,7 @@ const entities = [
 @Module({
     imports: [
         TypeOrmModule.forRootAsync({
-            useFactory: async () => {
+            useFactory: () => {
                 const config = {
                     host: process.env.DB_HOST,
                     port: Number(process.env.DB_PORT),
@@ -30,7 +30,6 @@ const entities = [
                 };
 
                 return {
-                    name: 'default',
                     type: 'mysql',
                     ...config,
                     autoLoadEntities: true,
