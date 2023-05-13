@@ -5,6 +5,9 @@ import {Review} from "./review.entity";
 import {CreateReviewDto} from "./dto/create-review.dto";
 import {RestaurantService} from "../restaurant/restaurant.service";
 import {UpdateReviewDto} from "./dto/update-review.dto";
+import {ReviewDto} from "./dto/review.dto";
+import {plainToInstance} from "class-transformer";
+import {array} from "joi";
 
 @Injectable()
 export class ReviewService {
@@ -38,14 +41,24 @@ export class ReviewService {
     }
 
     // 리뷰 조회
-    async findReviewById(reviewId: number): Promise<Review> {
-        return this.getOneById(reviewId);
+    async findReviewById(reviewId: number): Promise<ReviewDto> {
+        const review = await this.getOneById(reviewId);
+        return plainToInstance(ReviewDto, {
+            restaurantName: review.restaurant.name, ...review
+        });
     }
 
-    async findReviewsByRestaurantId(restaurantId: number): Promise<Review[]> {
-        return this.reviewRepository.createQueryBuilder('review')
-            .where('review.restaurantId = :restaurantId', { restaurantId })
-            .getMany();
+    async findReviewsByRestaurantId(restaurantId: number): Promise<ReviewDto[]> {
+        const reviews = await this.reviewRepository.find({
+            where: {
+                restaurant: {id: restaurantId}
+            },
+            relations: ['restaurant']
+        })
+        return reviews.map(review => plainToInstance(ReviewDto, {
+            restaurantName: review.restaurant.name,
+            ...review
+        }));
     }
 
 
@@ -60,7 +73,8 @@ export class ReviewService {
         return await this.reviewRepository.findOne({
             where: {
                 id,
-            }
+            },
+            relations: ['restaurant']
         })
     }
 }

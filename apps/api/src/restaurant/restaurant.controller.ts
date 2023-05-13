@@ -29,8 +29,9 @@ export class RestaurantController {
 
     // 레스토랑 등록
     @Post('restaurants')
-    async createRestaurant(@Body() dto: CreateRestaurantDto): Promise<void> {
-        await this.restaurantService.createRestaurant(dto);
+    async createRestaurant(@Body() dto: CreateRestaurantDto): Promise<RestaurantDto> {
+        const restaurant = await this.restaurantService.createRestaurant(dto);
+        return this.restaurantService.findRestaurantById(restaurant.id);
     }
 
     // 레스토랑 수정
@@ -38,8 +39,9 @@ export class RestaurantController {
     async updateRestaurant(
         @Body() dto: UpdateRestaurantDto,
         @Param('id') restaurantId: number
-    ) : Promise<void> {
-        await this.restaurantService.updateRestaurant(restaurantId, dto);
+    ) : Promise<RestaurantDto> {
+        const restaurant = await this.restaurantService.updateRestaurant(restaurantId, dto);
+        return this.restaurantService.findRestaurantById(restaurant.id);
     }
 
     // 레스토랑 삭제

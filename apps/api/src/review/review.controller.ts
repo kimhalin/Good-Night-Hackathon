@@ -6,6 +6,7 @@ import {UpdateReviewDto} from "../../../domain/review/dto/update-review.dto";
 import {CreateRestaurantDto} from "../../../domain/restaurant/dto/create-restaurant.dto";
 import {CreateReviewDto} from "../../../domain/review/dto/create-review.dto";
 import {Review} from "../../../domain/review/review.entity";
+import {ReviewDto} from "../../../domain/review/dto/review.dto";
 
 @Controller()
 export class ReviewController {
@@ -13,12 +14,12 @@ export class ReviewController {
     constructor(private readonly reviewService: ReviewService) {}
 
     @Get('reviews')
-    async findReviewsByRestaurantId(@Query('restaurant') restaurantId: number): Promise<Review[]> {
+    async findReviewsByRestaurantId(@Query('restaurant') restaurantId: number): Promise<ReviewDto[]> {
         return this.reviewService.findReviewsByRestaurantId(restaurantId);
     }
 
     @Get('reviews/:id')
-    async findReviewById(@Param('id') reviewId: number): Promise<Review> {
+    async findReviewById(@Param('id') reviewId: number): Promise<ReviewDto> {
         return this.reviewService.findReviewById(reviewId);
     }
 
@@ -26,8 +27,9 @@ export class ReviewController {
     async createReview(
         @Body() dto: CreateReviewDto,
         @Query('restaurant') restaurantId: number
-    ): Promise<void> {
-        await this.reviewService.createReview(restaurantId, dto);
+    ): Promise<ReviewDto> {
+        const review = await this.reviewService.createReview(restaurantId, dto);
+        return this.reviewService.findReviewById(review.id);
     }
 
     @Delete('reviews/:id')
@@ -39,7 +41,12 @@ export class ReviewController {
     async updateReview(
         @Body() dto: UpdateReviewDto,
         @Param('id') reviewId: number
-        ): Promise<void> {
-        await this.reviewService.updateReview(reviewId, dto);
+        ): Promise<ReviewDto> {
+
+        const review = await this.reviewService.updateReview(
+            reviewId,
+            dto
+        );
+        return this.reviewService.findReviewById(review.id);
     }
 }

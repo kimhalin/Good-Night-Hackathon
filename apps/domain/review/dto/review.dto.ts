@@ -1,13 +1,14 @@
 import {Exclude, Expose} from "class-transformer";
 
 @Exclude()
-export class RestaurantDto {
-    @Expose()
-    name: string;
+export class ReviewDto {
 
     @Expose()
-    category: string;
+    restaurantName: string;
 
     @Expose()
-    createdAt: Date;
+    title: string;
+
+    @Expose()
+    content: string;
 }

@@ -6,6 +6,8 @@ import {CreateRestaurantDto} from "./dto/create-restaurant.dto";
 import {UpdateRestaurantDto} from "./dto/update-restaurant.dto";
 import {RestaurantDto} from "./dto/restaurant.dto";
 import {Transactional} from "typeorm-transactional-cls-hooked";
+import {plainToInstance} from "class-transformer";
+import {ReviewDto} from "../review/dto/review.dto";
 
 @Injectable()
 export class RestaurantService {
@@ -25,7 +27,7 @@ export class RestaurantService {
     }
 
     // 레스토랑 수정
-    async updateRestaurant(restaurantId: number, dto: UpdateRestaurantDto): Promise<RestaurantDto> {
+    async updateRestaurant(restaurantId: number, dto: UpdateRestaurantDto): Promise<Restaurant> {
         const restaurant = await this.getOneById(restaurantId);
         restaurant.category = dto.category;
 
@@ -34,21 +36,24 @@ export class RestaurantService {
 
     // 레스토랑 조회
     async findRestaurantById(restaurantId: number): Promise<RestaurantDto> {
-        return this.getOneById(restaurantId);
+        const restaurant = await this.getOneById(restaurantId);
+        return plainToInstance(RestaurantDto, restaurant);
     }
 
     // 레스토랑 목록 조회
-    async findAll(): Promise<Restaurant[]> {
-        return this.restaurantRepository.find();
+    async findAll(): Promise<RestaurantDto[]> {
+        const restaurants = await this.restaurantRepository.find();
+        return restaurants.map(restaurant => plainToInstance(RestaurantDto, restaurant));
     }
 
     // 레스토랑 목록 조회 - 카테고리 필터링
     async findRestaurantsByCategory(category: string): Promise<RestaurantDto[]> {
-        return this.restaurantRepository.find({
+        const restaurants = await this.restaurantRepository.find({
             where: {
                 category: category
             },
         })
+        return restaurants.map(restaurant => plainToInstance(RestaurantDto, restaurant));
     }
 
     //레스토랑 삭제 (Soft Delete)
