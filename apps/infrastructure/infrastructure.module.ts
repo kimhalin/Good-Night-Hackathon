@@ -26,6 +26,7 @@ const entities = [
                     database: process.env.DB_DATABASE
                 };
 
+
                 return {
                     type: 'mysql',
                     ...config,
