@@ -9,9 +9,12 @@ import {ReviewDto} from "./dto/review.dto";
 import {plainToInstance} from "class-transformer";
 import {IPaginationOptions, paginate, Pagination} from "nestjs-typeorm-paginate";
 import {RestaurantDto} from "../restaurant/dto/restaurant.dto";
+import {FindAllReviewsWithPaginationDto} from "./dto/find-all-reviews-with-pagination.dto";
+import {IPaginated, Paginated} from "../common/pagination/paginated";
 
 @Injectable()
 export class ReviewService {
+
 
     constructor(
         @InjectRepository(Review)
@@ -56,19 +59,50 @@ export class ReviewService {
             },
             relations: ['restaurant']
         })
-        return reviews.map(review => plainToInstance(ReviewDto, {
-            restaurantName: review.restaurant.name,
-            ...review
-        }));
+        return plainToInstance(ReviewDto, reviews);
     }
 
-    async findReviewsPaginate(restaurantId: number, page: number): Promise<Pagination<ReviewDto>> {
-        const limit = 100;
-        const reviews = await this.paginate(
-            {page, limit}, true);
 
-        return null;
+    /**
+     * FindAllReviewsWithPaginationDto (query parameter로 받았을 당시)에 설정해준 default 값이 들어가지 않는다 ..!!
+     */
+    async findAllWithPagination(
+        dto: FindAllReviewsWithPaginationDto,
+    ): Promise<IPaginated<ReviewDto>> {
+        console.log(typeof dto.page);
+        const qb = this.reviewRepository
+            .createQueryBuilder('review')
+            .leftJoinAndSelect(
+                'review.restaurant',
+                'restaurant',
+            ).where('review.restaurantId = :restaurantId', {restaurantId: dto.restaurantId})
+            .skip((dto.page-1) * dto.itemsPerPage)
+            // getter의 문제?
+            // dto의 값이 아직도 string으로 온다 -> 변환 x
+            .take(dto.itemsPerPage);
 
+        if (dto.content) {
+            qb.andWhere('review.content like :content', {content: `%${dto.content}%`})
+        }
+
+        if (dto.title) {
+            qb.andWhere('review.title like :title', {title: `%${dto.title}%`})
+        }
+
+        if (dto.sortDesc) {
+            qb.orderBy('review.createdAt', 'DESC');
+        } else {
+            qb.orderBy('review.createdAt', 'ASC');
+        }
+
+        const [items, count] = await qb.getManyAndCount();
+
+        return new Paginated(
+            plainToInstance(ReviewDto, items),
+            count,
+            dto.page,
+            dto.itemsPerPage,
+        );
     }
 
     async paginate(options: IPaginationOptions, desc: boolean=true): Promise<Pagination<Review>> {

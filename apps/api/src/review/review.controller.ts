@@ -7,6 +7,8 @@ import {CreateRestaurantDto} from "../../../domain/restaurant/dto/create-restaur
 import {CreateReviewDto} from "../../../domain/review/dto/create-review.dto";
 import {Review} from "../../../domain/review/review.entity";
 import {ReviewDto} from "../../../domain/review/dto/review.dto";
+import {FindAllReviewsWithPaginationDto} from "../../../domain/review/dto/find-all-reviews-with-pagination.dto";
+import {IPaginated} from "../../../domain/common/pagination/paginated";
 
 @Controller()
 export class ReviewController {
@@ -14,8 +16,10 @@ export class ReviewController {
     constructor(private readonly reviewService: ReviewService) {}
 
     @Get('reviews')
-    async findReviewsByRestaurantId(@Query('restaurant') restaurantId: number): Promise<ReviewDto[]> {
-        return this.reviewService.findReviewsByRestaurantId(restaurantId);
+    async findReviewsByRestaurantId(
+        @Query() dto: FindAllReviewsWithPaginationDto
+    ): Promise<IPaginated<ReviewDto>> {
+        return this.reviewService.findAllWithPagination(dto);
     }
 
     @Get('reviews/:id')
@@ -49,4 +53,5 @@ export class ReviewController {
         );
         return this.reviewService.findReviewById(review.id);
     }
+
 }

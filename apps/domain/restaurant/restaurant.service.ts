@@ -43,7 +43,7 @@ export class RestaurantService {
     // 레스토랑 목록 조회
     async findAll(): Promise<RestaurantDto[]> {
         const restaurants = await this.restaurantRepository.find();
-        return restaurants.map(restaurant => plainToInstance(RestaurantDto, restaurant));
+        return plainToInstance(RestaurantDto, restaurants);
     }
 
     // 레스토랑 목록 조회 - 카테고리 필터링
@@ -53,7 +53,7 @@ export class RestaurantService {
                 category: category
             },
         })
-        return restaurants.map(restaurant => plainToInstance(RestaurantDto, restaurant));
+        return plainToInstance(RestaurantDto, restaurants);
     }
 
     //레스토랑 삭제 (Soft Delete)
