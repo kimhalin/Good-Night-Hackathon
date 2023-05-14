@@ -7,7 +7,8 @@ import {RestaurantService} from "../restaurant/restaurant.service";
 import {UpdateReviewDto} from "./dto/update-review.dto";
 import {ReviewDto} from "./dto/review.dto";
 import {plainToInstance} from "class-transformer";
-import {array} from "joi";
+import {IPaginationOptions, paginate, Pagination} from "nestjs-typeorm-paginate";
+import {RestaurantDto} from "../restaurant/dto/restaurant.dto";
 
 @Injectable()
 export class ReviewService {
@@ -61,6 +62,24 @@ export class ReviewService {
         }));
     }
 
+    async findReviewsPaginate(restaurantId: number, page: number): Promise<Pagination<ReviewDto>> {
+        const limit = 100;
+        const reviews = await this.paginate(
+            {page, limit}, true);
+
+        return null;
+
+    }
+
+    async paginate(options: IPaginationOptions, desc: boolean=true): Promise<Pagination<Review>> {
+        const queryBuilder = this.reviewRepository.createQueryBuilder('review');
+        if (desc) {
+            queryBuilder.orderBy('review.createdAt', 'DESC'); // Or whatever you need to do
+        } else {
+            queryBuilder.orderBy('review.createdAt', 'ASC'); // Or whatever you need to do
+        }
+        return paginate<Review>(queryBuilder, options);
+    }
 
     //레스토랑 삭제 (Soft Delete)
     async removeReview(id: number): Promise<void> {

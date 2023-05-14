@@ -20,7 +20,7 @@ const entities = [
 @Module({
     imports: [
         TypeOrmModule.forRootAsync({
-            useFactory: () => {
+            useFactory: async () => {
                 const config = {
                     host: process.env.DB_HOST,
                     port: Number(process.env.DB_PORT),

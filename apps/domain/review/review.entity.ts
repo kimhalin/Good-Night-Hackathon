@@ -4,6 +4,10 @@ import {Restaurant} from "../restaurant/restaurant.entity";
 
 @Entity()
 export class Review extends TypeOrmEntity {
+
+    @Column({ comment: '식당ID' })
+    restaurantId: number;
+
     @Column({comment: '제목'})
     title: string;
 
