@@ -7,13 +7,15 @@ import {
     initializeTransactionalContext,
     patchTypeORMRepositoryWithBaseRepository
 } from "typeorm-transactional-cls-hooked";
+import {User} from "../domain/user/user.entity";
 
 const dotenv = require('dotenv');
 dotenv.config();
 
 const entities = [
     Restaurant,
-    Review
+    Review,
+    User,
 ];
 
 @Global()
