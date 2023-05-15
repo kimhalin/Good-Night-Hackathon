@@ -1,16 +1,15 @@
-import {Exclude, Expose, Type} from "class-transformer";
-import {RestaurantDto} from "../../restaurant/dto/restaurant.dto";
+import {Exclude, Expose} from "class-transformer";
 
 @Exclude()
 export class ReviewDto {
 
     @Expose()
-    @Type(()=> RestaurantDto)
-    restaurant: RestaurantDto;
+    restaurantName: string;
 
     @Expose()
     title: string;
 
     @Expose()
     content: string;
+
 }

@@ -76,10 +76,9 @@ export class ReviewService {
                 'review.restaurant',
                 'restaurant',
             ).where('review.restaurantId = :restaurantId', {restaurantId: dto.restaurantId})
-            .skip((dto.page-1) * dto.itemsPerPage)
+            .skip(dto.offset)
             // getter의 문제?
-            // dto의 값이 아직도 string으로 온다 -> 변환 x
-            .take(dto.itemsPerPage);
+            .take(dto.limit);
 
         if (dto.content) {
             qb.andWhere('review.content like :content', {content: `%${dto.content}%`})
@@ -103,16 +102,6 @@ export class ReviewService {
             dto.page,
             dto.itemsPerPage,
         );
-    }
-
-    async paginate(options: IPaginationOptions, desc: boolean=true): Promise<Pagination<Review>> {
-        const queryBuilder = this.reviewRepository.createQueryBuilder('review');
-        if (desc) {
-            queryBuilder.orderBy('review.createdAt', 'DESC'); // Or whatever you need to do
-        } else {
-            queryBuilder.orderBy('review.createdAt', 'ASC'); // Or whatever you need to do
-        }
-        return paginate<Review>(queryBuilder, options);
     }
 
     //레스토랑 삭제 (Soft Delete)
