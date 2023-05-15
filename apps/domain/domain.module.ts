@@ -1,10 +1,12 @@
 import {Module} from "@nestjs/common";
 import {RestaurantService} from "./restaurant/restaurant.service";
 import {ReviewService} from "./review/review.service";
+import {UserService} from "./user/user.service";
 
 const services = [
     RestaurantService,
     ReviewService,
+    UserService,
 ];
 
 @Module({

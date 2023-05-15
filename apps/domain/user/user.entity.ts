@@ -1,6 +1,7 @@
-import {Column, Entity} from "typeorm";
+import {Column, Entity, OneToMany} from "typeorm";
 import {TypeOrmEntity} from "../common/typeorm.entity";
 import {Role} from "../common/enum";
+import {UserRestaurantBookmark} from "../user-restaurant-bookmark/user-restaurant-bookmark.entity";
 
 @Entity()
 export class User extends TypeOrmEntity {
@@ -16,5 +17,11 @@ export class User extends TypeOrmEntity {
 
     @Column({type: 'enum', enum: Role})
     role: Role;
+
+    @OneToMany(
+        () => UserRestaurantBookmark,
+        (userRestaurantBookmark) => userRestaurantBookmark.user,
+        )
+    userRestaurantBookmarks: UserRestaurantBookmark[];
 
 }

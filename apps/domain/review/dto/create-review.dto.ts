@@ -2,13 +2,13 @@ import {IsString} from "class-validator";
 
 export class CreateReviewDto {
     /**
-     * 레스토랑명
+     * 제목
      */
     @IsString()
     title: string;
 
     /**
-     * 카테고리
+     * 내용
      */
     @IsString()
     content: string;
